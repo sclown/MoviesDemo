@@ -1,0 +1,45 @@
+{
+  "configurations" : [
+    {
+      "id" : "91A6B0BE-DDB7-48EF-AC41-B142689DE347",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:MainNavigation",
+        "identifier" : "MainNavigationTests",
+        "name" : "MainNavigationTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:NetworkService",
+        "identifier" : "NetworkServiceTests",
+        "name" : "NetworkServiceTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Features",
+        "identifier" : "FeaturesTests",
+        "name" : "FeaturesTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:MoviesApi",
+        "identifier" : "MoviesApiTests",
+        "name" : "MoviesApiTests"
+      }
+    }
+  ],
+  "version" : 1
+}

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "container:MoviesDemo.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:MainNavigation">
+   </FileRef>
+   <FileRef
+      location = "group:Features">
+   </FileRef>
+   <FileRef
+      location = "group:NetworkService">
+   </FileRef>
+   <FileRef
+      location = "group:MoviesApi">
+   </FileRef>
+</Workspace>
