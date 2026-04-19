@@ -21,16 +21,23 @@
     },
     {
       "target" : {
-        "containerPath" : "container:NetworkService",
-        "identifier" : "NetworkServiceTests",
-        "name" : "NetworkServiceTests"
+        "containerPath" : "container:Features",
+        "identifier" : "FeaturesTests",
+        "name" : "FeaturesTests"
       }
     },
     {
       "target" : {
-        "containerPath" : "container:Features",
-        "identifier" : "FeaturesTests",
-        "name" : "FeaturesTests"
+        "containerPath" : "container:MoviesDemo.xcodeproj",
+        "identifier" : "DE95D63D2F89396000A659CF",
+        "name" : "MoviesDemoUITests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:NetworkService",
+        "identifier" : "NetworkServiceTests",
+        "name" : "NetworkServiceTests"
       }
     },
     {
