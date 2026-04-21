@@ -10,6 +10,7 @@ struct MoviesDemoApp: App {
     var body: some Scene {
         WindowGroup {
             MainNavigation()
+                .preferredColorScheme(.dark)
         }
     }
 }

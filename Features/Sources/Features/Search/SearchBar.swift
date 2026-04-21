@@ -14,13 +14,28 @@ struct SearchBar: View {
             Image(systemName: "magnifyingglass")
                 .foregroundStyle(.secondary)
                 .font(.subheadline)
+                .padding(.leading, 12)
+                .accessibilityHidden(true)
 
             TextField("Search movies...", text: $text)
                 .focused($isFocused)
                 .textFieldStyle(.plain)
                 .submitLabel(.search)
                 .font(.subheadline)
-
+                .contentShape(Rectangle().inset(by: -10))
+                .onTapGesture {
+                    isFocused = true
+                }
+                .padding(.vertical, 10)
+                .accessibilityValue(text)
+        }
+        .background(.ultraThinMaterial)
+        .clipShape(Capsule())
+        .overlay(Capsule().stroke(.white, lineWidth: 0.5))
+        .contentShape(.accessibility, Capsule())
+        .accessibilityAddTraits(.isSearchField)
+        .accessibilityLabel("Search movies")
+        .overlay(alignment: .trailing) {
             if !text.isEmpty {
                 Button {
                     onClear()
@@ -28,14 +43,13 @@ struct SearchBar: View {
                     Image(systemName: "xmark.circle.fill")
                         .foregroundStyle(.white)
                         .font(.subheadline)
+                        .padding(.vertical, 10)
+                        .padding(.horizontal, 12)
                 }
+                .accessibilityLabel("Clear search")
+                .accessibilitySortPriority(1)
             }
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 10)
-        .background(.ultraThinMaterial)
-        .clipShape(Capsule())
-        .overlay(Capsule().stroke(.white, lineWidth: 0.5))
     }
 }
 
