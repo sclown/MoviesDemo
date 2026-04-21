@@ -20,7 +20,7 @@ struct SearchResultRow: View {
                         .foregroundStyle(.quaternary)
                         .overlay {
                             Image(systemName: "film")
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(Color.white.opacity(0.75))
                                 .font(.caption2)
                         }
                 }
@@ -40,13 +40,13 @@ struct SearchResultRow: View {
                             .font(.caption2)
                         Text(movie.rating)
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Color.white.opacity(0.75))
                     }
 
                     if let date = movie.releaseDate {
                         Text(date)
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Color.white.opacity(0.75))
                     }
                 }
             }

@@ -26,6 +26,7 @@ struct DetailsView: View {
                     }
                 }
                 .clipShape(RoundedRectangle(cornerRadius: 12))
+                .accessibilityLabel("Movie's poster")
 
                 VStack(alignment: .leading, spacing: 8) {
                     HStack(spacing: 4) {
@@ -35,10 +36,13 @@ struct DetailsView: View {
                             .fontWeight(.semibold)
                     }
                     .font(.title3)
+                    .accessibilityElement(children: .combine)
+                    .accessibilityLabel("Rating")
+                    .accessibilityValue(movie.rating)
 
                     if let releaseDate = movie.releaseDate, !releaseDate.isEmpty {
                         Text("Release date: \(releaseDate)")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Color.white.opacity(0.75))
                     }
 
                     Text(movie.overview)

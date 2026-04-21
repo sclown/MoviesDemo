@@ -14,17 +14,17 @@ struct MovieCell: View {
                 .foregroundStyle(.quaternary)
                 .aspectRatio(2 / 3, contentMode: .fill)
                 .overlay {
-                    Text(movie.title)
-                        .font(.caption)
-                        .fontWeight(.semibold)
-                        .multilineTextAlignment(.center)
-                        .padding(4)
-                }
-                .overlay {
                     if let image = state.image {
                         image
                             .resizable()
                             .aspectRatio(contentMode: .fill)
+                            .accessibilityLabel(movie.title)
+                    } else {
+                        Text(movie.title)
+                            .font(.caption)
+                            .fontWeight(.semibold)
+                            .multilineTextAlignment(.center)
+                            .padding(4)
                     }
                 }
         }

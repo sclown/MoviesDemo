@@ -74,6 +74,7 @@ struct SearchOverlay: View {
                 }
             }
             .listStyle(.plain)
+            .accessibilityIdentifier("searchResults")
             .scrollDismissesKeyboard(.interactively)
         }
     }

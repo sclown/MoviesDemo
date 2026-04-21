@@ -12,12 +12,17 @@ struct SearchBar: View {
     var body: some View {
         HStack(spacing: 8) {
             Image(systemName: "magnifyingglass")
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.white.opacity(0.65))
                 .font(.subheadline)
                 .padding(.leading, 12)
                 .accessibilityHidden(true)
 
-            TextField("Search movies...", text: $text)
+            TextField(
+                "",
+                text: $text,
+                prompt: Text("Search")
+                    .foregroundStyle(.white.opacity(0.65))
+            )
                 .focused($isFocused)
                 .textFieldStyle(.plain)
                 .submitLabel(.search)
@@ -27,7 +32,9 @@ struct SearchBar: View {
                     isFocused = true
                 }
                 .padding(.vertical, 10)
+                .padding(.trailing, 12)
                 .accessibilityValue(text)
+                .accessibilityIdentifier("searchField")
         }
         .background(.ultraThinMaterial)
         .clipShape(Capsule())
@@ -48,6 +55,7 @@ struct SearchBar: View {
                 }
                 .accessibilityLabel("Clear search")
                 .accessibilitySortPriority(1)
+                .accessibilityIdentifier("clearSearchButton")
             }
         }
     }

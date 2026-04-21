@@ -22,7 +22,7 @@ final class MoviesDemoUITests: XCTestCase {
 
     @MainActor
     func testSearchBarExists() {
-        let searchField = app.textFields["Search movies..."]
+        let searchField = app.searchFields["searchField"]
         XCTAssertTrue(searchField.waitForExistence(timeout: 10))
     }
 
@@ -38,7 +38,7 @@ final class MoviesDemoUITests: XCTestCase {
 
     @MainActor
     func testSearchShowsResults() {
-        let searchField = app.textFields["Search movies..."]
+        let searchField = app.searchFields["searchField"]
         XCTAssertTrue(searchField.waitForExistence(timeout: 10))
 
         searchField.tap()
@@ -60,5 +60,41 @@ final class MoviesDemoUITests: XCTestCase {
 
         let navBar = app.navigationBars["Popular Movies"]
         XCTAssertTrue(navBar.waitForExistence(timeout: 5))
+    }
+
+    @MainActor
+    func testAccessibilityMoviesGrid() throws {
+        let navBar = app.navigationBars["Popular Movies"]
+        XCTAssertTrue(navBar.waitForExistence(timeout: 10))
+
+        try app.performAccessibilityAudit()
+    }
+
+    @MainActor
+    func testAccessibilityMovieDetails() throws {
+        let firstCell = app.scrollViews.buttons.firstMatch
+        XCTAssertTrue(firstCell.waitForExistence(timeout: 10))
+        firstCell.tap()
+
+        let backButton = app.navigationBars.buttons.firstMatch
+        XCTAssertTrue(backButton.waitForExistence(timeout: 5))
+
+        try app.performAccessibilityAudit()
+    }
+
+    @MainActor
+    func testAccessibilitySearchResults() throws {
+        let searchField = app.searchFields["searchField"]
+        XCTAssertTrue(searchField.waitForExistence(timeout: 10))
+
+        searchField.tap()
+        searchField.typeText("Batman")
+
+        let resultCell = app.collectionViews["searchResults"].buttons.firstMatch
+        XCTAssertTrue(resultCell.waitForExistence(timeout: 10))
+        
+        app.keyboards.buttons["Search"].tap()
+
+        try app.performAccessibilityAudit()
     }
 }
