@@ -23,7 +23,7 @@ struct MoviesView: View {
 
             SearchOverlay(viewModel: searchViewModel)
         }
-        .navigationTitle("Popular Movies")
+        .navigationTitle(Text("Popular Movies", bundle: .module))
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             viewModel.load()

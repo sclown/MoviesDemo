@@ -10,11 +10,17 @@ struct ErrorView: View {
 
     var body: some View {
         ContentUnavailableView {
-            Label("Error", systemImage: "exclamationmark.triangle")
+            Label {
+                Text("Error", bundle: .module)
+            } icon: {
+                Image(systemName: "exclamationmark.triangle")
+            }
         } description: {
             Text(message)
         } actions: {
-            Button("Retry", action: onRetry)
+            Button(action: onRetry) {
+                Text("Retry", bundle: .module)
+            }
         }
     }
 }

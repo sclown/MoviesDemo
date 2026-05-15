@@ -12,9 +12,9 @@ struct EmptySearchResultsView: View {
             Image(systemName: "magnifyingglass")
                 .font(.largeTitle)
                 .foregroundStyle(.secondary)
-            Text("No results for \"\(query)\"")
+            Text("No results for \"\(query)\"", bundle: .module)
                 .font(.headline)
-            Text("Try a different search term")
+            Text("Try a different search term", bundle: .module)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         }

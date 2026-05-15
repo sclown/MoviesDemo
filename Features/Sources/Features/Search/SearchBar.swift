@@ -20,7 +20,7 @@ struct SearchBar: View {
             TextField(
                 "",
                 text: $text,
-                prompt: Text("Search")
+                prompt: Text("Search", bundle: .module)
                     .foregroundStyle(.white.opacity(0.65))
             )
                 .focused($isFocused)
@@ -41,7 +41,7 @@ struct SearchBar: View {
         .overlay(Capsule().stroke(.white, lineWidth: 0.5))
         .contentShape(.accessibility, Capsule())
         .accessibilityAddTraits(.isSearchField)
-        .accessibilityLabel("Search movies")
+        .accessibilityLabel(Text("Search movies", bundle: .module))
         .overlay(alignment: .trailing) {
             if !text.isEmpty {
                 Button {
@@ -53,7 +53,7 @@ struct SearchBar: View {
                         .padding(.vertical, 10)
                         .padding(.horizontal, 12)
                 }
-                .accessibilityLabel("Clear search")
+                .accessibilityLabel(Text("Clear search", bundle: .module))
                 .accessibilitySortPriority(1)
                 .accessibilityIdentifier("clearSearchButton")
             }

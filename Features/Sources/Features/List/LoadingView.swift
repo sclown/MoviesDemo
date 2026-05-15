@@ -6,7 +6,9 @@ import SwiftUI
 
 struct LoadingView: View {
     var body: some View {
-        ProgressView("Loading movies...")
+        ProgressView {
+            Text("Loading movies…", bundle: .module)
+        }
     }
 }
 

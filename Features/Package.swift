@@ -5,6 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "Features",
+    defaultLocalization: "en",
     platforms: [
         .iOS(.v18)
     ],
@@ -29,6 +30,9 @@ let package = Package(
                 "MoviesApi",
                 "NetworkService",
                 .product(name: "NukeUI", package: "Nuke"),
+            ],
+            resources: [
+                .process("Resources")
             ]),
         .testTarget(
             name: "FeaturesTests",
