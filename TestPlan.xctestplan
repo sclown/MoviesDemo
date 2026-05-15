@@ -21,9 +21,23 @@
     },
     {
       "target" : {
-        "containerPath" : "container:Features",
-        "identifier" : "FeaturesTests",
-        "name" : "FeaturesTests"
+        "containerPath" : "container:MoviesCore",
+        "identifier" : "MoviesCoreTests",
+        "name" : "MoviesCoreTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Movies",
+        "identifier" : "MoviesTests",
+        "name" : "MoviesTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Search",
+        "identifier" : "SearchTests",
+        "name" : "SearchTests"
       }
     },
     {

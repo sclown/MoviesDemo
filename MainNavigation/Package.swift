@@ -16,19 +16,24 @@ let package = Package(
     ],
     dependencies: [
         .package(name: "MoviesApi", path: "../MoviesApi"),
-        .package(name: "Features", path: "../Features"),
+        .package(name: "MoviesCore", path: "../MoviesCore"),
+        .package(name: "Movies", path: "../Movies"),
+        .package(name: "Search", path: "../Search"),
     ],
     targets: [
         .target(
             name: "MainNavigation",
             dependencies: [
                 "MoviesApi",
-                "Features"
+                "MoviesCore",
+                "Movies",
+                "Search",
             ]),
         .testTarget(
             name: "MainNavigationTests",
             dependencies: [
                 "MainNavigation",
+                "MoviesCore",
             ]),
     ]
 )

@@ -2,7 +2,7 @@ import Testing
 import Foundation
 import SwiftUI
 
-@testable import Features
+import MoviesCore
 @testable import MainNavigation
 
 @MainActor

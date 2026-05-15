@@ -1,0 +1,64 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "" : {
+
+    },
+    "Clear search" : {
+      "comment" : "Accessibility label for the button that clears the search field.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suche löschen"
+          }
+        }
+      }
+    },
+    "No results for \"%@\"" : {
+      "comment" : "Empty-state title when a search returns no results. %@ is the search query.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Ergebnisse für „%@“"
+          }
+        }
+      }
+    },
+    "Search" : {
+      "comment" : "Placeholder text inside the search field.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suchen"
+          }
+        }
+      }
+    },
+    "Search movies" : {
+      "comment" : "Accessibility label for the search field.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filme suchen"
+          }
+        }
+      }
+    },
+    "Try a different search term" : {
+      "comment" : "Empty-state subtitle when a search returns no results.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versuche es mit einem anderen Suchbegriff"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

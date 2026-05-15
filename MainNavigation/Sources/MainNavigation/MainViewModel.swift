@@ -2,7 +2,7 @@
 //  MainViewModel.swift
 //
 
-import Features
+import MoviesCore
 import SwiftUI
 
 @Observable

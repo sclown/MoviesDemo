@@ -1,0 +1,83 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Error" : {
+      "comment" : "Title of the error state shown when movies fail to load.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fehler"
+          }
+        }
+      }
+    },
+    "Loading movies…" : {
+      "comment" : "Progress indicator label while the movies list is loading.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filme werden geladen…"
+          }
+        }
+      }
+    },
+    "Movie's poster" : {
+      "comment" : "Accessibility label for the movie poster image on the details screen.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Filmplakat"
+          }
+        }
+      }
+    },
+    "Popular Movies" : {
+      "comment" : "Navigation bar title on the popular movies screen.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beliebte Filme"
+          }
+        }
+      }
+    },
+    "Rating" : {
+      "comment" : "Accessibility label for the rating value on the details screen.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bewertung"
+          }
+        }
+      }
+    },
+    "Release date: %@" : {
+      "comment" : "Release date line on the details screen. %@ is the formatted date string.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erscheinungsdatum: %@"
+          }
+        }
+      }
+    },
+    "Retry" : {
+      "comment" : "Button that re-attempts loading after an error.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erneut versuchen"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

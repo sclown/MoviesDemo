@@ -3,17 +3,23 @@
 //
 
 import MoviesApi
-import Features
+import MoviesCore
+import Movies
+import Search
 
 struct AppEnvironment {
     let movieService: MovieService
-    let onNavigation: (MovieDetails) -> Void
-    
+    let onShowDetails: (MovieDetails) -> Void
+
     @MainActor
-    init(movieService: MovieService, onNavigation: @escaping (MovieDetails) -> Void) {
+    init(movieService: MovieService, onShowDetails: @escaping (MovieDetails) -> Void) {
         self.movieService = movieService
-        self.onNavigation = onNavigation
+        self.onShowDetails = onShowDetails
     }
 }
 
-extension AppEnvironment:  FeaturesEnvironment {}
+extension AppEnvironment: MoviesEnvironment {
+    var onNavigation: (MovieDetails) -> Void { onShowDetails }
+}
+
+extension AppEnvironment: SearchEnvironment {}

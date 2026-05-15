@@ -3,12 +3,15 @@
 //
 
 import MoviesApi
-import Features
+import MoviesCore
+import Movies
+import Search
 import SwiftUI
 
 public struct MainNavigation: View {
     private let viewModel: MainViewModel
-    private let features: FeaturesModule
+    private let moviesModule: MoviesModule
+    private let searchModule: SearchModule
     private let appEnvironment: AppEnvironment
 
     public init() {
@@ -16,11 +19,18 @@ public struct MainNavigation: View {
         self.viewModel = viewModel
         appEnvironment = AppEnvironment(
             movieService: MovieService(),
-            onNavigation: { [weak viewModel] movie in
-                viewModel?.navigate(to: movie)
+            onShowDetails: { [viewModel] movie in
+                viewModel.navigate(to: movie)
             }
         )
-        features = FeaturesModule(appEnvironment)
+        moviesModule = MoviesModule(appEnvironment)
+            .withNavigation { [viewModel] in
+                viewModel.navigate(to: $0)
+            }
+        searchModule = SearchModule(appEnvironment)
+            .withNavigation { [viewModel] in
+                viewModel.navigate(to: $0)
+            }
     }
 
     public var body: some View {
@@ -30,10 +40,12 @@ public struct MainNavigation: View {
                 set: { viewModel.reset(to: $0) }
             )
         ) {
-            features.movies()
-                .navigationDestination(for: MovieDetails.self) { movie in
-                    features.details(movie: movie)
-                }
+            moviesModule.movies {
+                searchModule.overlay()
+            }
+            .navigationDestination(for: MovieDetails.self) { movie in
+                moviesModule.details(movie: movie)
+            }
         }
     }
 }
