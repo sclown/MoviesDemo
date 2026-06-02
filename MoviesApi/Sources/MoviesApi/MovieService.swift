@@ -10,8 +10,7 @@ import NetworkService
 }
 
 public nonisolated struct MovieService: Sendable {
-    // Non-production key hardcoded for simplicity — makes it easier to check the app without extra setup
-    private let apiKey = "acaa04aa57fe828654301c23969b4b37"
+    private let apiKey = ProcessInfo.processInfo.environment["TMDB_API_KEY"] ?? ""
     private let baseURL = "https://api.themoviedb.org/3"
     private let networkClient: NetworkClient
     private let parser: MovieParser
@@ -27,7 +26,7 @@ public nonisolated struct MovieService: Sendable {
         parser: MovieParser = MovieParser()
     ) {
         self.networkClient = networkClient
-        self.parser = parser
+        self.parser = parser        
     }
 
     @ServiceActor

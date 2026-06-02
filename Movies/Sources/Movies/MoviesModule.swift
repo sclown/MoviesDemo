@@ -28,13 +28,8 @@ public final class MoviesModule {
         return self
     }
 
-    public func movies<SearchOverlay: View>(
-        @ViewBuilder searchOverlay: @escaping () -> SearchOverlay
-    ) -> some View {
-        MoviesView(
-            viewModel: makeMoviesViewModel(),
-            searchOverlay: searchOverlay
-        )
+    public func movies() -> some View {
+        MoviesView(viewModel: makeMoviesViewModel())
     }
 
     public func details(movie: MovieDetails) -> some View {

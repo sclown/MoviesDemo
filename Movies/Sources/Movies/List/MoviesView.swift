@@ -5,9 +5,8 @@
 import SwiftUI
 import MoviesCore
 
-struct MoviesView<SearchOverlay: View>: View {
+struct MoviesView: View {
     let viewModel: MoviesViewModeling
-    @ViewBuilder let searchOverlay: () -> SearchOverlay
     private var state: MoviesListState { viewModel.state.value }
 
     var body: some View {
@@ -21,8 +20,6 @@ struct MoviesView<SearchOverlay: View>: View {
             } else {
                 movieGrid(state: state)
             }
-
-            searchOverlay()
         }
         .navigationTitle(Text("Popular Movies", bundle: .module))
         .navigationBarTitleDisplayMode(.inline)
@@ -61,7 +58,6 @@ struct MoviesView_Previews: PreviewProvider {
         NavigationStack {
             MoviesView(
                 viewModel: PreviewMoviesViewModel(state: ObservableState(.empty)),
-                searchOverlay: { EmptyView() }
             )
         }
         .preferredColorScheme(.dark)
@@ -71,7 +67,6 @@ struct MoviesView_Previews: PreviewProvider {
         NavigationStack {
             MoviesView(
                 viewModel: PreviewMoviesViewModel(state: ObservableState(.error)),
-                searchOverlay: { EmptyView() }
             )
         }
         .preferredColorScheme(.dark)
@@ -81,7 +76,6 @@ struct MoviesView_Previews: PreviewProvider {
         NavigationStack {
             MoviesView(
                 viewModel: PreviewMoviesViewModel(state: ObservableState(.movies3)),
-                searchOverlay: { EmptyView() }
             )
         }
         .preferredColorScheme(.dark)
@@ -91,7 +85,6 @@ struct MoviesView_Previews: PreviewProvider {
         NavigationStack {
             MoviesView(
                 viewModel: PreviewMoviesViewModel(state: ObservableState(.movies8)),
-                searchOverlay: { EmptyView() }
             )
         }
         .preferredColorScheme(.dark)

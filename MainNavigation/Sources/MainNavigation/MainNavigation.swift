@@ -40,9 +40,8 @@ public struct MainNavigation: View {
                 set: { viewModel.reset(to: $0) }
             )
         ) {
-            moviesModule.movies {
-                searchModule.overlay()
-            }
+            moviesModule.movies()
+            .overlay(searchModule.overlay())
             .navigationDestination(for: MovieDetails.self) { movie in
                 moviesModule.details(movie: movie)
             }
