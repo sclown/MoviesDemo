@@ -2,16 +2,23 @@
 //  SearchOverlay.swift
 //
 
+import ComposableArchitecture
 import SwiftUI
 import MoviesCore
 
-struct SearchOverlay: View {
-    var viewModel: SearchViewModeling
+public struct SearchOverlay: View {
+    let store: StoreOf<SearchFeature>
     @FocusState private var isSearchFocused: Bool
 
-    private var state: SearchState { viewModel.state.value }
+    public init(store: StoreOf<SearchFeature>) {
+        self.store = store
+    }
 
-    var body: some View {
+    private var cards: [SearchCard] {
+        store.results.map(SearchCard.init(from:))
+    }
+
+    public var body: some View {
         ZStack {
             if isActive {
                 dimming
@@ -24,12 +31,12 @@ struct SearchOverlay: View {
                 }
                 SearchBar(
                     text: Binding(
-                        get: { state.searchQuery },
-                        set: { viewModel.updateSearchQuery($0) }
+                        get: { store.query },
+                        set: { store.send(.queryChanged($0)) }
                     ),
                     isFocused: $isSearchFocused
                 ) {
-                    viewModel.updateSearchQuery("")
+                    store.send(.queryChanged(""))
                     isSearchFocused = false
                 }
                 .padding(.horizontal, 16)
@@ -40,7 +47,7 @@ struct SearchOverlay: View {
 
     @ViewBuilder
     private var dimming: some View {
-        Color.black.opacity(state.searchResults.isEmpty ? 0.8 : 1)
+        Color.black.opacity(store.results.isEmpty ? 0.8 : 1)
             .ignoresSafeArea()
             .allowsHitTesting(true)
             .onTapGesture {
@@ -50,13 +57,13 @@ struct SearchOverlay: View {
 
     @ViewBuilder
     private var searchResults: some View {
-        if state.showEmptyLabel {
-            EmptySearchResultsView(query: state.searchQuery)
-        } else if !state.searchQuery.isEmpty {
+        if store.showEmptyLabel {
+            EmptySearchResultsView(query: store.query)
+        } else if !store.query.isEmpty {
             resultsList
                 .ignoresSafeArea(edges: .top)
                 .overlay(alignment: .bottom) {
-                    if state.isSearching {
+                    if store.isSearching {
                         ProgressView().padding(8)
                     }
                 }
@@ -66,9 +73,9 @@ struct SearchOverlay: View {
     @ViewBuilder
     private var resultsList: some View {
         VStack {
-            List(state.searchResults) { movie in
+            List(cards) { movie in
                 Button {
-                    viewModel.showDetails(for: movie.id)
+                    store.send(.resultTapped(id: movie.id))
                     isSearchFocused = false
                 } label: {
                     SearchResultRow(movie: movie)
@@ -81,46 +88,22 @@ struct SearchOverlay: View {
     }
 
     private var isActive: Bool {
-        isSearchFocused || !state.searchQuery.isEmpty
+        isSearchFocused || !store.query.isEmpty
     }
 }
 
 struct SearchOverlay_Previews: PreviewProvider {
-    struct Wrapper: View {
-        let viewModel: PreviewSearchViewModel
-
-        var body: some View {
-            ZStack {
-                Color.black.ignoresSafeArea()
-                SearchOverlay(viewModel: viewModel)
-            }
+    private static func view(_ state: SearchFeature.State) -> some View {
+        ZStack {
+            Color.black.ignoresSafeArea()
+            SearchOverlay(store: Store(initialState: state) { SearchFeature() })
         }
-    }
-
-    static var searching: some View {
-        Wrapper(viewModel: PreviewSearchViewModel(state: ObservableState(.searching)))
-            .preferredColorScheme(.dark)
-    }
-
-    static var empty: some View {
-        Wrapper(viewModel: PreviewSearchViewModel(state: ObservableState(.noResults)))
-            .preferredColorScheme(.dark)
-    }
-
-    static var results3: some View {
-        Wrapper(viewModel: PreviewSearchViewModel(state: ObservableState(.results3)))
-            .preferredColorScheme(.dark)
+        .preferredColorScheme(.dark)
     }
 
     static var previews: some View {
-        searching.previewDisplayName("Loading")
-        empty.previewDisplayName("Empty")
-        results3.previewDisplayName("3 Results")
-    }
-
-    struct PreviewSearchViewModel: SearchViewModeling {
-        let state: ObservableState<SearchState>
-        func updateSearchQuery(_ query: String) {}
-        func showDetails(for movieId: Int) {}
+        view(.searching).previewDisplayName("Loading")
+        view(.noResults).previewDisplayName("Empty")
+        view(.results3).previewDisplayName("3 Results")
     }
 }

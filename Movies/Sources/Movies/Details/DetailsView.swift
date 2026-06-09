@@ -2,14 +2,21 @@
 //  DetailsView.swift
 //
 
+import ComposableArchitecture
 import SwiftUI
 import NukeUI
 import MoviesCore
 
-struct DetailsView: View {
-    let movie: MovieDetails
+public struct DetailsView: View {
+    let store: StoreOf<DetailsFeature>
 
-    var body: some View {
+    public init(store: StoreOf<DetailsFeature>) {
+        self.store = store
+    }
+
+    private var movie: MovieDetails { store.movie }
+
+    public var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 LazyImage(url: movie.poster) { state in
@@ -59,7 +66,9 @@ struct DetailsView: View {
 
 #Preview {
     NavigationStack {
-        DetailsView(movie: .mock)
+        DetailsView(store: Store(initialState: DetailsFeature.State(movie: .mock)) {
+            DetailsFeature()
+        })
     }
     .preferredColorScheme(.dark)
 }

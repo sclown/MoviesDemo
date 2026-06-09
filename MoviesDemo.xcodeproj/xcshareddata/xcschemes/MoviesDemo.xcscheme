@@ -79,6 +79,13 @@
             ReferencedContainer = "container:MoviesDemo.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <EnvironmentVariables>
+         <EnvironmentVariable
+            key = "TMDB_API_KEY"
+            value = "acaa04aa57fe828654301c23969b4b37"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+      </EnvironmentVariables>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"

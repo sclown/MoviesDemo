@@ -6,7 +6,8 @@ import PackageDescription
 let package = Package(
     name: "MoviesApi",
     platforms: [
-        .iOS(.v18)
+        .iOS(.v18),
+        .macOS(.v13)
     ],
     products: [
         .library(
@@ -20,12 +21,14 @@ let package = Package(
     ],
     dependencies: [
         .package(name: "NetworkService", path: "../NetworkService"),
+        .package(url: "https://github.com/pointfreeco/swift-composable-architecture", from: "1.17.0"),
     ],
     targets: [
         .target(
             name: "MoviesApi",
             dependencies: [
-                "NetworkService"
+                "NetworkService",
+                .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
             ]),
         .target(
             name: "MoviesApiMocks",

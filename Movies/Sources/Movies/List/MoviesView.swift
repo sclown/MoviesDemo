@@ -2,43 +2,51 @@
 //  MoviesView.swift
 //
 
+import ComposableArchitecture
 import SwiftUI
 import MoviesCore
 
-struct MoviesView: View {
-    let viewModel: MoviesViewModeling
-    private var state: MoviesListState { viewModel.state.value }
+public struct MoviesView: View {
+    let store: StoreOf<MoviesFeature>
 
-    var body: some View {
+    public init(store: StoreOf<MoviesFeature>) {
+        self.store = store
+    }
+
+    private var cards: [MovieCard] {
+        store.movies.map(MovieCard.init(from:))
+    }
+
+    public var body: some View {
         ZStack {
-            if state.isLoading {
+            if store.isLoading {
                 LoadingView()
-            } else if let error = state.errorMessage {
+            } else if let error = store.errorMessage {
                 ErrorView(message: error) {
-                    viewModel.load()
+                    store.send(.onAppear)
                 }
             } else {
-                movieGrid(state: state)
+                movieGrid
             }
         }
         .navigationTitle(Text("Popular Movies", bundle: .module))
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
-            viewModel.load()
+            store.send(.onAppear)
         }
     }
 
-    private func movieGrid(state: MoviesListState) -> some View {
+    private var movieGrid: some View {
         ScrollView {
             LazyVGrid(columns: columns, spacing: 12) {
-                ForEach(state.movies) { movie in
+                ForEach(cards) { movie in
                     Button {
-                        viewModel.showDetails(for: movie.id)
+                        store.send(.movieTapped(id: movie.id))
                     } label: {
                         MovieCell(movie: movie)
                     }
                     .onAppear {
-                        viewModel.loadMoreIfNeeded(currentMovieId: movie.id)
+                        store.send(.movieAppeared(id: movie.id))
                     }
                 }
             }
@@ -54,53 +62,17 @@ struct MoviesView: View {
 }
 
 struct MoviesView_Previews: PreviewProvider {
-    static var loading: some View {
+    private static func view(_ state: MoviesFeature.State) -> some View {
         NavigationStack {
-            MoviesView(
-                viewModel: PreviewMoviesViewModel(state: ObservableState(.empty)),
-            )
-        }
-        .preferredColorScheme(.dark)
-    }
-
-    static var error: some View {
-        NavigationStack {
-            MoviesView(
-                viewModel: PreviewMoviesViewModel(state: ObservableState(.error)),
-            )
-        }
-        .preferredColorScheme(.dark)
-    }
-
-    static var movies3: some View {
-        NavigationStack {
-            MoviesView(
-                viewModel: PreviewMoviesViewModel(state: ObservableState(.movies3)),
-            )
-        }
-        .preferredColorScheme(.dark)
-    }
-
-    static var movies8: some View {
-        NavigationStack {
-            MoviesView(
-                viewModel: PreviewMoviesViewModel(state: ObservableState(.movies8)),
-            )
+            MoviesView(store: Store(initialState: state) { MoviesFeature() })
         }
         .preferredColorScheme(.dark)
     }
 
     static var previews: some View {
-        movies8.previewDisplayName("8 Movies")
-        movies3.previewDisplayName("3 Movies")
-        loading.previewDisplayName("Loading")
-        error.previewDisplayName("Error")
-    }
-
-    struct PreviewMoviesViewModel: MoviesViewModeling {
-        let state: ObservableState<MoviesListState>
-        func load() {}
-        func loadMoreIfNeeded(currentMovieId: Int) {}
-        func showDetails(for movieId: Int) {}
+        view(.movies8).previewDisplayName("8 Movies")
+        view(.movies3).previewDisplayName("3 Movies")
+        view(.loading).previewDisplayName("Loading")
+        view(.error).previewDisplayName("Error")
     }
 }

@@ -6,7 +6,8 @@ let package = Package(
     name: "Movies",
     defaultLocalization: "en",
     platforms: [
-        .iOS(.v18)
+        .iOS(.v18),
+        .macOS(.v13)
     ],
     products: [
         .library(
@@ -21,7 +22,8 @@ let package = Package(
 
         .package(url: "https://github.com/kean/Nuke", from: "13.0.1"),
         .package(url: "https://github.com/EmergeTools/SnapshotPreviews", from: "0.12.0"),
-        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.17.0")
+        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.17.0"),
+        .package(url: "https://github.com/pointfreeco/swift-composable-architecture", from: "1.17.0")
     ],
     targets: [
         .target(
@@ -31,6 +33,7 @@ let package = Package(
                 "NetworkService",
                 "MoviesCore",
                 .product(name: "NukeUI", package: "Nuke"),
+                .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
             ],
             resources: [
                 .process("Resources")
@@ -44,6 +47,7 @@ let package = Package(
                 .product(name: "MoviesApiMocks", package: "MoviesApi"),
                 "NetworkService",
                 .product(name: "NetworkServiceMocks", package: "NetworkService"),
+                .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
                 .product(name: "SnapshotPreviewsCore", package: "SnapshotPreviews"),
                 .product(name: "SnapshottingTests", package: "SnapshotPreviews"),
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
