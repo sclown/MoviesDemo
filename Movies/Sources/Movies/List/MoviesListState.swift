@@ -3,12 +3,20 @@
 //
 
 import Foundation
+import MoviesApi
 
 struct MoviesListState {
-    let movies: [MovieCard]
-    let isLoading: Bool
-    let isLoadingMore: Bool
-    let errorMessage: String?
+    // View-facing state.
+    var movies: [MovieCard]
+    var isLoading: Bool
+    var isLoadingMore: Bool
+    var errorMessage: String?
+
+    // Domain bookkeeping, owned by the reducer.
+    var loaded: [Movie] = []
+    var hasLoaded = false
+    var currentPage = 1
+    var totalPages = 1
 }
 
 extension MoviesListState {

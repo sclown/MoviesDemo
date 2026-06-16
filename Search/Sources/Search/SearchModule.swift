@@ -15,7 +15,7 @@ public protocol SearchEnvironment {
 public final class SearchModule {
     private let environment: SearchEnvironment
     private var navigation: (MovieDetails) -> Void = { _ in }
-    private weak var cachedSearchViewModel: SearchViewModel?
+    private weak var cachedStore: SearchStore?
 
     public func withNavigation(
         handler: @escaping (MovieDetails) -> Void
@@ -29,16 +29,19 @@ public final class SearchModule {
     }
 
     public func overlay() -> some View {
-        SearchOverlay(viewModel: makeSearchViewModel())
+        SearchOverlay(store: makeStore())
     }
-    
-    private func makeSearchViewModel() -> SearchViewModel {
-        if let cached = cachedSearchViewModel { return cached }
-        let vm = SearchViewModel(
-            service: environment.movieService,
-            navigation: navigation
+
+    private func makeStore() -> SearchStore {
+        if let cached = cachedStore { return cached }
+        let store = SearchStore(
+            initialState: .empty,
+            reducer: searchReducer(
+                service: environment.movieService,
+                navigation: navigation
+            )
         )
-        cachedSearchViewModel = vm
-        return vm
+        cachedStore = store
+        return store
     }
 }

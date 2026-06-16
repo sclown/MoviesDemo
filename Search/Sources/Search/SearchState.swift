@@ -3,12 +3,17 @@
 //
 
 import Foundation
+import MoviesApi
 
 struct SearchState {
-    let searchResults: [SearchCard]
-    let isSearching: Bool
-    let searchQuery: String
-    let showEmptyLabel: Bool
+    // View-facing state.
+    var searchResults: [SearchCard]
+    var isSearching: Bool
+    var searchQuery: String
+    var showEmptyLabel: Bool
+
+    // Domain bookkeeping, owned by the reducer.
+    var loaded: [Movie] = []
 }
 
 extension SearchState {

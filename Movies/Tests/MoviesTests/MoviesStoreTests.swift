@@ -8,25 +8,28 @@ import NetworkService
 import NetworkServiceMocks
 
 @MainActor
-private func makeViewModel(
+private func makeStore(
     data: Result<Data, Error>,
     logger: TestStateLogger<MoviesListState>,
     navigation: @escaping (MovieDetails) -> () = { _ in }
-) -> MoviesViewModel {
+) -> MoviesStore {
     let client = MockNetworkClient(result: data)
     let service = MovieService(networkClient: client)
-    let vm = MoviesViewModel(service: service, navigation: navigation)
-    vm.state.didChange = logger.log
-    return vm
+    let store = MoviesStore(
+        initialState: .empty,
+        reducer: moviesReducer(service: service, navigation: navigation)
+    )
+    store.didChange = logger.log
+    return store
 }
 
 @MainActor
-struct MoviesViewModelTests {
+struct MoviesStoreTests {
     @Test func loadSetsMovies() async throws {
         let logger = TestStateLogger<MoviesListState>()
-        let vm = makeViewModel(data: .success(.validList()), logger: logger)
+        let store = makeStore(data: .success(.validList()), logger: logger)
 
-        vm.load()
+        store.send(.onAppear)
         let loading = try await logger.next()
         let loaded = try await logger.next()
 
@@ -38,9 +41,9 @@ struct MoviesViewModelTests {
 
     @Test func loadSetsErrorOnFailure() async throws {
         let logger = TestStateLogger<MoviesListState>()
-        let vm = makeViewModel(data: .failure(NetworkError.noConnection), logger: logger)
+        let store = makeStore(data: .failure(NetworkError.noConnection), logger: logger)
 
-        vm.load()
+        store.send(.onAppear)
         let loading = try await logger.next()
         let loaded = try await logger.next()
 
@@ -54,15 +57,18 @@ struct MoviesViewModelTests {
         let logger = TestStateLogger<MoviesListState>()
         let client = MockNetworkClient(result: .success(.validList(range: 1..<3)))
         let service = MovieService(networkClient: client)
-        let vm = MoviesViewModel(service: service)
-        vm.state.didChange = logger.log
+        let store = MoviesStore(
+            initialState: .empty,
+            reducer: moviesReducer(service: service, navigation: { _ in })
+        )
+        store.didChange = logger.log
 
-        vm.load()
+        store.send(.onAppear)
         _ = try await logger.collect(count: 2)
         client.result = .success(.validList(range: 3..<5))
 
-        let lastMovie = vm.state.value.movies.last!
-        vm.loadMoreIfNeeded(currentMovieId: lastMovie.id)
+        let lastMovie = store.state.movies.last!
+        store.send(.movieAppeared(id: lastMovie.id))
         let loading = try await logger.next()
         let loaded = try await logger.next()
 
@@ -73,55 +79,54 @@ struct MoviesViewModelTests {
 
     @Test func loadMoreIgnoresNonLastMovie() async throws {
         let logger = TestStateLogger<MoviesListState>()
-        let vm = makeViewModel(data: .success(.validList(total: 3)), logger: logger)
+        let store = makeStore(data: .success(.validList(total: 3)), logger: logger)
 
-        vm.load()
+        store.send(.onAppear)
         try await logger.collect(count: 2)
 
-        let firstMovie = vm.state.value.movies.first!
-        vm.loadMoreIfNeeded(currentMovieId: firstMovie.id)
-        await #expect(throws: TestLoggerTimeout.self) {
-            try await logger.collect(count: 1, timeout: .milliseconds(100))
-        }
-        #expect(vm.state.value.movies.count == 2)
+        let firstMovie = store.state.movies.first!
+        store.send(.movieAppeared(id: firstMovie.id))
+
+        #expect(store.state.movies.count == 2)
+        #expect(store.state.isLoadingMore == false)
     }
 
-    @Test func showDetailsTriggersNavigation() async throws {
+    @Test func cardTapTriggersNavigation() async throws {
         let logger = TestStateLogger<MoviesListState>()
         var navigatedMovie: MovieDetails?
         let navigation: (MovieDetails) -> Void = { navigatedMovie = $0 }
 
-        let vm = makeViewModel(
+        let store = makeStore(
             data: .success(.validList(total: 1)),
             logger: logger,
             navigation: navigation
         )
 
-        vm.load()
+        store.send(.onAppear)
         _ = try await logger.collect(count: 2)
 
-        vm.showDetails(for: 1)
+        store.send(.cardTapped(id: 1))
 
         #expect(navigatedMovie != nil)
         #expect(navigatedMovie?.id == 1)
         #expect(navigatedMovie?.title == "Test Movie 1")
     }
 
-    @Test func showDetailsIgnoresUnknownId() async throws {
+    @Test func cardTapIgnoresUnknownId() async throws {
         let logger = TestStateLogger<MoviesListState>()
         var navigatedMovie: MovieDetails?
         let navigation: (MovieDetails) -> Void = { navigatedMovie = $0 }
 
-        let vm = makeViewModel(
+        let store = makeStore(
             data: .success(.validList()),
             logger: logger,
             navigation: navigation
         )
 
-        vm.load()
+        store.send(.onAppear)
         _ = try await logger.collect(count: 2)
 
-        vm.showDetails(for: 999)
+        store.send(.cardTapped(id: 999))
 
         #expect(navigatedMovie == nil)
     }

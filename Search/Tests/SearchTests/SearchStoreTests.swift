@@ -28,31 +28,32 @@ private struct StubNetworkClient: NetworkClient {
 }
 
 @MainActor
-private func makeSearchViewModel(
+private func makeStore(
     searchData: Data? = nil,
     error: Error? = nil,
     navigation: @escaping (MovieDetails) -> Void = { _ in },
     logger: TestStateLogger<SearchState>
-) -> SearchViewModel {
+) -> SearchStore {
     let client = StubNetworkClient(searchData: searchData, error: error)
     let service = MovieService(networkClient: client)
-    return SearchViewModel(
-        service: service,
-        navigation: navigation,
-        logger: logger.log
+    let store = SearchStore(
+        initialState: .empty,
+        reducer: searchReducer(service: service, navigation: navigation)
     )
+    store.didChange = logger.log
+    return store
 }
 
 @MainActor
-struct SearchViewModelTests {
+struct SearchStoreTests {
     @Test func searchDebouncesAndReturnsResults() async throws {
         let logger = TestStateLogger<SearchState>()
-        let vm = makeSearchViewModel(
+        let store = makeStore(
             searchData: makeJSON(ids: [10, 11], totalPages: 1),
             logger: logger
         )
 
-        vm.updateSearchQuery("test")
+        store.send(.queryChanged("test"))
         let searching = try await logger.next()
         let searched = try await logger.next()
 
@@ -64,36 +65,36 @@ struct SearchViewModelTests {
 
     @Test func clearingSearchClearsResults() async throws {
         let logger = TestStateLogger<SearchState>()
-        let vm = makeSearchViewModel(
+        let store = makeStore(
             searchData: makeJSON(ids: [10], totalPages: 1),
             logger: logger
         )
 
-        vm.updateSearchQuery("test")
+        store.send(.queryChanged("test"))
         try await logger.collect(count: 1)
         let searched = try await logger.next()
         #expect(searched.searchResults.count == 1)
 
-        vm.updateSearchQuery("")
+        store.send(.queryChanged(""))
         let cleared = try await logger.next()
 
         #expect(cleared.searchResults.isEmpty)
         #expect(cleared.searchQuery.isEmpty)
     }
 
-    @Test func showDetailsInvokesCallback() async throws {
+    @Test func resultTapInvokesCallback() async throws {
         let logger = TestStateLogger<SearchState>()
         var navigated: MovieDetails?
-        let vm = makeSearchViewModel(
+        let store = makeStore(
             searchData: makeJSON(ids: [42], totalPages: 1),
             navigation: { navigated = $0 },
             logger: logger
         )
 
-        vm.updateSearchQuery("test")
+        store.send(.queryChanged("test"))
         _ = try await logger.collect(count: 2)
 
-        vm.showDetails(for: 42)
+        store.send(.resultTapped(id: 42))
 
         #expect(navigated?.id == 42)
     }

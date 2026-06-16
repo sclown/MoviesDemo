@@ -6,10 +6,10 @@ import SwiftUI
 import MoviesCore
 
 struct SearchOverlay: View {
-    var viewModel: SearchViewModeling
+    let store: SearchStore
     @FocusState private var isSearchFocused: Bool
 
-    private var state: SearchState { viewModel.state.value }
+    private var state: SearchState { store.state }
 
     var body: some View {
         ZStack {
@@ -25,11 +25,11 @@ struct SearchOverlay: View {
                 SearchBar(
                     text: Binding(
                         get: { state.searchQuery },
-                        set: { viewModel.updateSearchQuery($0) }
+                        set: { store.send(.queryChanged($0)) }
                     ),
                     isFocused: $isSearchFocused
                 ) {
-                    viewModel.updateSearchQuery("")
+                    store.send(.queryChanged(""))
                     isSearchFocused = false
                 }
                 .padding(.horizontal, 16)
@@ -68,7 +68,7 @@ struct SearchOverlay: View {
         VStack {
             List(state.searchResults) { movie in
                 Button {
-                    viewModel.showDetails(for: movie.id)
+                    store.send(.resultTapped(id: movie.id))
                     isSearchFocused = false
                 } label: {
                     SearchResultRow(movie: movie)
@@ -86,29 +86,33 @@ struct SearchOverlay: View {
 }
 
 struct SearchOverlay_Previews: PreviewProvider {
+    private static func previewStore(_ state: SearchState) -> SearchStore {
+        Store(initialState: state) { _, _ in .none }
+    }
+
     struct Wrapper: View {
-        let viewModel: PreviewSearchViewModel
+        let store: SearchStore
 
         var body: some View {
             ZStack {
                 Color.black.ignoresSafeArea()
-                SearchOverlay(viewModel: viewModel)
+                SearchOverlay(store: store)
             }
         }
     }
 
     static var searching: some View {
-        Wrapper(viewModel: PreviewSearchViewModel(state: ObservableState(.searching)))
+        Wrapper(store: previewStore(.searching))
             .preferredColorScheme(.dark)
     }
 
     static var empty: some View {
-        Wrapper(viewModel: PreviewSearchViewModel(state: ObservableState(.noResults)))
+        Wrapper(store: previewStore(.noResults))
             .preferredColorScheme(.dark)
     }
 
     static var results3: some View {
-        Wrapper(viewModel: PreviewSearchViewModel(state: ObservableState(.results3)))
+        Wrapper(store: previewStore(.results3))
             .preferredColorScheme(.dark)
     }
 
@@ -116,11 +120,5 @@ struct SearchOverlay_Previews: PreviewProvider {
         searching.previewDisplayName("Loading")
         empty.previewDisplayName("Empty")
         results3.previewDisplayName("3 Results")
-    }
-
-    struct PreviewSearchViewModel: SearchViewModeling {
-        let state: ObservableState<SearchState>
-        func updateSearchQuery(_ query: String) {}
-        func showDetails(for movieId: Int) {}
     }
 }

@@ -6,8 +6,8 @@ import SwiftUI
 import MoviesCore
 
 struct MoviesView: View {
-    let viewModel: MoviesViewModeling
-    private var state: MoviesListState { viewModel.state.value }
+    let store: MoviesStore
+    private var state: MoviesListState { store.state }
 
     var body: some View {
         ZStack {
@@ -15,7 +15,7 @@ struct MoviesView: View {
                 LoadingView()
             } else if let error = state.errorMessage {
                 ErrorView(message: error) {
-                    viewModel.load()
+                    store.send(.retryTapped)
                 }
             } else {
                 movieGrid(state: state)
@@ -24,7 +24,7 @@ struct MoviesView: View {
         .navigationTitle(Text("Popular Movies", bundle: .module))
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
-            viewModel.load()
+            store.send(.onAppear)
         }
     }
 
@@ -33,12 +33,12 @@ struct MoviesView: View {
             LazyVGrid(columns: columns, spacing: 12) {
                 ForEach(state.movies) { movie in
                     Button {
-                        viewModel.showDetails(for: movie.id)
+                        store.send(.cardTapped(id: movie.id))
                     } label: {
                         MovieCell(movie: movie)
                     }
                     .onAppear {
-                        viewModel.loadMoreIfNeeded(currentMovieId: movie.id)
+                        store.send(.movieAppeared(id: movie.id))
                     }
                 }
             }
@@ -54,38 +54,34 @@ struct MoviesView: View {
 }
 
 struct MoviesView_Previews: PreviewProvider {
+    private static func previewStore(_ state: MoviesListState) -> MoviesStore {
+        Store(initialState: state) { _, _ in .none }
+    }
+
     static var loading: some View {
         NavigationStack {
-            MoviesView(
-                viewModel: PreviewMoviesViewModel(state: ObservableState(.empty)),
-            )
+            MoviesView(store: previewStore(.empty))
         }
         .preferredColorScheme(.dark)
     }
 
     static var error: some View {
         NavigationStack {
-            MoviesView(
-                viewModel: PreviewMoviesViewModel(state: ObservableState(.error)),
-            )
+            MoviesView(store: previewStore(.error))
         }
         .preferredColorScheme(.dark)
     }
 
     static var movies3: some View {
         NavigationStack {
-            MoviesView(
-                viewModel: PreviewMoviesViewModel(state: ObservableState(.movies3)),
-            )
+            MoviesView(store: previewStore(.movies3))
         }
         .preferredColorScheme(.dark)
     }
 
     static var movies8: some View {
         NavigationStack {
-            MoviesView(
-                viewModel: PreviewMoviesViewModel(state: ObservableState(.movies8)),
-            )
+            MoviesView(store: previewStore(.movies8))
         }
         .preferredColorScheme(.dark)
     }
@@ -95,12 +91,5 @@ struct MoviesView_Previews: PreviewProvider {
         movies3.previewDisplayName("3 Movies")
         loading.previewDisplayName("Loading")
         error.previewDisplayName("Error")
-    }
-
-    struct PreviewMoviesViewModel: MoviesViewModeling {
-        let state: ObservableState<MoviesListState>
-        func load() {}
-        func loadMoreIfNeeded(currentMovieId: Int) {}
-        func showDetails(for movieId: Int) {}
     }
 }

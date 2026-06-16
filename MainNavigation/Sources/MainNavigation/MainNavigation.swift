@@ -9,35 +9,38 @@ import Search
 import SwiftUI
 
 public struct MainNavigation: View {
-    private let viewModel: MainViewModel
+    private let store: NavigationStore
     private let moviesModule: MoviesModule
     private let searchModule: SearchModule
     private let appEnvironment: AppEnvironment
 
     public init() {
-        let viewModel = MainViewModel()
-        self.viewModel = viewModel
+        let store = NavigationStore(
+            initialState: NavigationState(),
+            reducer: navigationReducer()
+        )
+        self.store = store
         appEnvironment = AppEnvironment(
             movieService: MovieService(),
-            onShowDetails: { [viewModel] movie in
-                viewModel.navigate(to: movie)
+            onShowDetails: { [store] movie in
+                store.send(.navigate(movie))
             }
         )
         moviesModule = MoviesModule(appEnvironment)
-            .withNavigation { [viewModel] in
-                viewModel.navigate(to: $0)
+            .withNavigation { [store] in
+                store.send(.navigate($0))
             }
         searchModule = SearchModule(appEnvironment)
-            .withNavigation { [viewModel] in
-                viewModel.navigate(to: $0)
+            .withNavigation { [store] in
+                store.send(.navigate($0))
             }
     }
 
     public var body: some View {
         NavigationStack(
             path: Binding(
-                get: { viewModel.path },
-                set: { viewModel.reset(to: $0) }
+                get: { store.state.path },
+                set: { store.send(.pathChanged($0)) }
             )
         ) {
             moviesModule.movies()
