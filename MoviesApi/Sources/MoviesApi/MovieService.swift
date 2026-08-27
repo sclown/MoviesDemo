@@ -4,12 +4,31 @@
 
 import Foundation
 import NetworkService
+import FactoryKit
 
 @globalActor public actor ServiceActor: GlobalActor {
     public static let shared = ServiceActor()
 }
 
-public nonisolated struct MovieService: Sendable {
+public protocol MovieServicing: Sendable {
+    @ServiceActor func fetchPopularMovies(page: Int) async throws -> MovieResponse
+    @ServiceActor func searchMovies(query: String, page: Int) async throws -> MovieResponse
+}
+
+public extension MovieServicing {
+    @ServiceActor
+    func searchMovies(query: String) async throws -> MovieResponse {
+        try await searchMovies(query: query, page: 1)
+    }
+}
+
+extension Container {
+    public var movieService: Factory<any MovieServicing> {
+        self { MovieService(networkClient: self.networkClient()) }.singleton
+    }
+}
+
+public nonisolated struct MovieService: MovieServicing, Sendable {
     private let apiKey = ProcessInfo.processInfo.environment["TMDB_API_KEY"] ?? ""
     private let baseURL = "https://api.themoviedb.org/3"
     private let networkClient: NetworkClient

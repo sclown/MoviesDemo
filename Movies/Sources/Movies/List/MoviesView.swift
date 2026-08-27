@@ -2,14 +2,17 @@
 //  MoviesView.swift
 //
 
-import SwiftUI
+import FactoryKit
 import MoviesCore
+import SwiftUI
 
-struct MoviesView: View {
-    let viewModel: MoviesViewModeling
+public struct MoviesView: View {
+    let viewModel: MoviesViewModeling = Container.shared.moviesViewModel()
     private var state: MoviesListState { viewModel.state.value }
+    
+    public init() { }
 
-    var body: some View {
+    public var body: some View {
         ZStack {
             if state.isLoading {
                 LoadingView()
@@ -21,6 +24,7 @@ struct MoviesView: View {
                 movieGrid(state: state)
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .navigationTitle(Text("Popular Movies", bundle: .module))
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
@@ -54,38 +58,38 @@ struct MoviesView: View {
 }
 
 struct MoviesView_Previews: PreviewProvider {
+    
+    static func view(with state: MoviesListState) -> some View {
+        Container.shared.moviesViewModel.register {
+            PreviewMoviesViewModel(state: ObservableState(state))
+        }
+        return MoviesView()
+    }
+    
     static var loading: some View {
         NavigationStack {
-            MoviesView(
-                viewModel: PreviewMoviesViewModel(state: ObservableState(.empty)),
-            )
+            view(with: .empty)
         }
         .preferredColorScheme(.dark)
     }
 
     static var error: some View {
         NavigationStack {
-            MoviesView(
-                viewModel: PreviewMoviesViewModel(state: ObservableState(.error)),
-            )
+            view(with: .error)
         }
         .preferredColorScheme(.dark)
     }
 
     static var movies3: some View {
         NavigationStack {
-            MoviesView(
-                viewModel: PreviewMoviesViewModel(state: ObservableState(.movies3)),
-            )
+            view(with: .movies3)
         }
         .preferredColorScheme(.dark)
     }
 
     static var movies8: some View {
         NavigationStack {
-            MoviesView(
-                viewModel: PreviewMoviesViewModel(state: ObservableState(.movies8)),
-            )
+            view(with: .movies8)
         }
         .preferredColorScheme(.dark)
     }

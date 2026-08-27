@@ -19,15 +19,15 @@ final class SearchViewModel: SearchViewModeling {
 
     private var searchResults: [Movie] = []
 
-    private let service: MovieService
-    private let navigation: (MovieDetails) -> Void
+    private let service: any MovieServicing
+    private let navigation: @MainActor (MovieDetails) -> Void
     private let logger: StateLogger<SearchState>
     private var searchTask: Task<Void, Never>?
 
     init(
         state: SearchState = .empty,
-        service: MovieService = MovieService(),
-        navigation: @escaping (MovieDetails) -> Void = { _ in },
+        service: any MovieServicing,
+        navigation: @escaping @MainActor (MovieDetails) -> Void = { _ in },
         logger: @escaping StateLogger<SearchState> = { _ in }
     ) {
         self.state = ObservableState(state)

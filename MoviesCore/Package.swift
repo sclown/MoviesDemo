@@ -15,12 +15,14 @@ let package = Package(
     ],
     dependencies: [
         .package(name: "MoviesApi", path: "../MoviesApi"),
+        .package(url: "https://github.com/hmlongco/Factory", from: "3.2.1"),
     ],
     targets: [
         .target(
             name: "MoviesCore",
             dependencies: [
-                "MoviesApi"
+                "MoviesApi",
+                .product(name: "FactoryKit", package: "Factory"),
             ]),
         .testTarget(
             name: "MoviesCoreTests",

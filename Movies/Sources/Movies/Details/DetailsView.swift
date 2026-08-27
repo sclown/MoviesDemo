@@ -6,10 +6,14 @@ import SwiftUI
 import NukeUI
 import MoviesCore
 
-struct DetailsView: View {
+public struct DetailsView: View {
     let movie: MovieDetails
 
-    var body: some View {
+    public init(movie: MovieDetails) {
+        self.movie = movie
+    }
+
+    public var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 LazyImage(url: movie.poster) { state in

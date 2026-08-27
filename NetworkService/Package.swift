@@ -19,11 +19,13 @@ let package = Package(
         ),
     ],
     dependencies: [
+        .package(url: "https://github.com/hmlongco/Factory", from: "3.2.1"),
     ],
     targets: [
         .target(
             name: "NetworkService",
             dependencies: [
+                .product(name: "FactoryKit", package: "Factory"),
             ]),
         .target(
             name: "NetworkServiceMocks",

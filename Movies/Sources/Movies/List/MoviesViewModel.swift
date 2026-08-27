@@ -22,15 +22,15 @@ final class MoviesViewModel: MoviesViewModeling {
     private var currentPage = 1
     private var totalPages = 1
 
-    private let service: MovieService
-    private let navigation: (MovieDetails) -> Void
+    private let service: any MovieServicing
+    private let navigation: @MainActor (MovieDetails) -> Void
     private var loadTask: Task<Void, Never>?
     private var loadMoreTask: Task<Void, Never>?
 
     init(
         state: MoviesListState = .empty,
-        service: MovieService = MovieService(),
-        navigation: @escaping (MovieDetails) -> Void = { _ in }
+        service: any MovieServicing,
+        navigation: @escaping @MainActor (MovieDetails) -> Void = { _ in }
     ) {
         self.state = ObservableState(state)
         self.service = service

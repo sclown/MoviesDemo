@@ -3,9 +3,16 @@
 //
 
 import Foundation
+import FactoryKit
 
 public protocol NetworkClient: Sendable {
     func data(from url: URL) async throws -> Data
+}
+
+extension Container {
+    public var networkClient: Factory<any NetworkClient> {
+        self { URLSessionNetworkClient() }
+    }
 }
 
 public struct URLSessionNetworkClient: NetworkClient {

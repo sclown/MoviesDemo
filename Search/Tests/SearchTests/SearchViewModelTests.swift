@@ -31,7 +31,7 @@ private struct StubNetworkClient: NetworkClient {
 private func makeSearchViewModel(
     searchData: Data? = nil,
     error: Error? = nil,
-    navigation: @escaping (MovieDetails) -> Void = { _ in },
+    navigation: @escaping @MainActor (MovieDetails) -> Void = { _ in },
     logger: TestStateLogger<SearchState>
 ) -> SearchViewModel {
     let client = StubNetworkClient(searchData: searchData, error: error)

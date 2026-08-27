@@ -19,6 +19,7 @@ let package = Package(
         .package(name: "MoviesCore", path: "../MoviesCore"),
         .package(name: "Movies", path: "../Movies"),
         .package(name: "Search", path: "../Search"),
+        .package(url: "https://github.com/hmlongco/Factory", from: "3.2.1"),
     ],
     targets: [
         .target(
@@ -28,6 +29,7 @@ let package = Package(
                 "MoviesCore",
                 "Movies",
                 "Search",
+                .product(name: "FactoryKit", package: "Factory"),
             ]),
         .testTarget(
             name: "MainNavigationTests",

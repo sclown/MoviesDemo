@@ -2,16 +2,19 @@
 //  SearchOverlay.swift
 //
 
-import SwiftUI
+import FactoryKit
 import MoviesCore
+import SwiftUI
 
-struct SearchOverlay: View {
-    var viewModel: SearchViewModeling
+public struct SearchOverlay: View {
+    var viewModel: SearchViewModeling = Container.shared.searchViewModel()
     @FocusState private var isSearchFocused: Bool
 
     private var state: SearchState { viewModel.state.value }
+    
+    public init() {}
 
-    var body: some View {
+    public var body: some View {
         ZStack {
             if isActive {
                 dimming
@@ -87,28 +90,32 @@ struct SearchOverlay: View {
 
 struct SearchOverlay_Previews: PreviewProvider {
     struct Wrapper: View {
-        let viewModel: PreviewSearchViewModel
+        init(state: SearchState) {
+            Container.shared.searchViewModel.register {
+                PreviewSearchViewModel(state: ObservableState(state))
+            }
+        }
 
         var body: some View {
             ZStack {
                 Color.black.ignoresSafeArea()
-                SearchOverlay(viewModel: viewModel)
+                SearchOverlay()
             }
         }
     }
 
     static var searching: some View {
-        Wrapper(viewModel: PreviewSearchViewModel(state: ObservableState(.searching)))
+        Wrapper(state: .searching)
             .preferredColorScheme(.dark)
     }
 
     static var empty: some View {
-        Wrapper(viewModel: PreviewSearchViewModel(state: ObservableState(.noResults)))
+        Wrapper(state: .noResults)
             .preferredColorScheme(.dark)
     }
 
     static var results3: some View {
-        Wrapper(viewModel: PreviewSearchViewModel(state: ObservableState(.results3)))
+        Wrapper(state: .results3)
             .preferredColorScheme(.dark)
     }
 

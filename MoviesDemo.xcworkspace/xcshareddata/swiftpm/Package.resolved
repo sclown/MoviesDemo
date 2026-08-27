@@ -1,6 +1,15 @@
 {
-  "originHash" : "808fbb23dde25946caafafef986a2795cf9cabc436f3a7cb90bd2cdb9a100904",
+  "originHash" : "66bd5ea64f4cc57738267f16dab5b943f64fba98be5bcb369f6181bdb7295b17",
   "pins" : [
+    {
+      "identity" : "factory",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/hmlongco/Factory",
+      "state" : {
+        "revision" : "cacafd638e8af1dac8abd6a4ab013d53983e2703",
+        "version" : "3.2.1"
+      }
+    },
     {
       "identity" : "flyingfox",
       "kind" : "remoteSourceControl",

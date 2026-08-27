@@ -20,12 +20,14 @@ let package = Package(
     ],
     dependencies: [
         .package(name: "NetworkService", path: "../NetworkService"),
+        .package(url: "https://github.com/hmlongco/Factory", from: "3.2.1"),
     ],
     targets: [
         .target(
             name: "MoviesApi",
             dependencies: [
-                "NetworkService"
+                "NetworkService",
+                .product(name: "FactoryKit", package: "Factory"),
             ]),
         .target(
             name: "MoviesApiMocks",

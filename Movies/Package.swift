@@ -21,7 +21,8 @@ let package = Package(
 
         .package(url: "https://github.com/kean/Nuke", from: "13.0.1"),
         .package(url: "https://github.com/EmergeTools/SnapshotPreviews", from: "0.12.0"),
-        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.17.0")
+        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.17.0"),
+        .package(url: "https://github.com/hmlongco/Factory", from: "3.2.1")
     ],
     targets: [
         .target(
@@ -31,6 +32,7 @@ let package = Package(
                 "NetworkService",
                 "MoviesCore",
                 .product(name: "NukeUI", package: "Nuke"),
+                .product(name: "FactoryKit", package: "Factory"),
             ],
             resources: [
                 .process("Resources")

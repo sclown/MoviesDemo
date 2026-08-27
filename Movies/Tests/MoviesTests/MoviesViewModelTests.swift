@@ -11,7 +11,7 @@ import NetworkServiceMocks
 private func makeViewModel(
     data: Result<Data, Error>,
     logger: TestStateLogger<MoviesListState>,
-    navigation: @escaping (MovieDetails) -> () = { _ in }
+    navigation: @escaping @MainActor (MovieDetails) -> () = { _ in }
 ) -> MoviesViewModel {
     let client = MockNetworkClient(result: data)
     let service = MovieService(networkClient: client)
@@ -89,7 +89,7 @@ struct MoviesViewModelTests {
     @Test func showDetailsTriggersNavigation() async throws {
         let logger = TestStateLogger<MoviesListState>()
         var navigatedMovie: MovieDetails?
-        let navigation: (MovieDetails) -> Void = { navigatedMovie = $0 }
+        let navigation: @MainActor (MovieDetails) -> Void = { navigatedMovie = $0 }
 
         let vm = makeViewModel(
             data: .success(.validList(total: 1)),
@@ -110,7 +110,7 @@ struct MoviesViewModelTests {
     @Test func showDetailsIgnoresUnknownId() async throws {
         let logger = TestStateLogger<MoviesListState>()
         var navigatedMovie: MovieDetails?
-        let navigation: (MovieDetails) -> Void = { navigatedMovie = $0 }
+        let navigation: @MainActor (MovieDetails) -> Void = { navigatedMovie = $0 }
 
         let vm = makeViewModel(
             data: .success(.validList()),
